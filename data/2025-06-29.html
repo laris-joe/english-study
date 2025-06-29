@@ -423,50 +423,97 @@
             `;
         }
 
+        // Browser detection
+        function isSafari() {
+            return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        }
+
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent);
+        }
+
+        function getBrowserInfo() {
+            if (isIOS()) return 'iOS Safari';
+            if (isSafari()) return 'Safari';
+            if (navigator.userAgent.includes('Chrome')) return 'Chrome';
+            if (navigator.userAgent.includes('Edge')) return 'Edge';
+            return 'Other';
+        }
+
         function playPronunciation(word) {
             const indicator = document.getElementById('audioIndicator');
             indicator.classList.add('show');
             
-            // Try to use Web Speech API if available
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance();
-                utterance.text = word;
-                indicator.textContent = `🔊 Playing: "${word}"`;
+            const browserInfo = getBrowserInfo();
+            
+            // For Safari, offer alternative options
+            if (isSafari() || isIOS()) {
+                indicator.textContent = `🔊 Safari detected - TTS quality may vary. Consider Chrome/Edge for better pronunciation`;
                 
-                // Set voice parameters for better pronunciation
-                utterance.rate = 0.8; // Slightly slower for learning
-                utterance.pitch = 1;
-                utterance.volume = 1;
-                
-                // Try to use a high-quality English voice
-                const voices = speechSynthesis.getVoices();
-                const englishVoice = voices.find(voice => 
-                    voice.lang.startsWith('en') && 
-                    (voice.name.includes('Google') || voice.name.includes('Microsoft') || voice.name.includes('Natural'))
-                ) || voices.find(voice => voice.lang.startsWith('en'));
-                
-                if (englishVoice) {
-                    utterance.voice = englishVoice;
+                // Still try TTS but with Safari-specific settings
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance();
+                    utterance.text = word;
+                    
+                    // Safari-specific optimizations
+                    utterance.rate = 0.6; // Even slower for Safari
+                    utterance.pitch = 1.2; // Slightly higher pitch
+                    utterance.volume = 1;
+                    
+                    // For Safari, try to find the best available voice
+                    const voices = speechSynthesis.getVoices();
+                    const englishVoice = voices.find(voice => 
+                        voice.lang === 'en-US' || voice.lang === 'en-GB'
+                    ) || voices.find(voice => voice.lang.startsWith('en'));
+                    
+                    if (englishVoice) {
+                        utterance.voice = englishVoice;
+                    }
+                    
+                    speechSynthesis.speak(utterance);
+                    
+                    utterance.onend = function() {
+                        // Show suggestion for better experience
+                        setTimeout(() => {
+                            indicator.textContent = `💡 For better pronunciation, try: Chrome, Edge, or Google Translate`;
+                            setTimeout(() => {
+                                indicator.classList.remove('show');
+                            }, 3000);
+                        }, 500);
+                    };
+                } else {
+                    openGoogleTranslate(word);
                 }
-                
-                speechSynthesis.speak(utterance);
-                
-                utterance.onend = function() {
-                    indicator.classList.remove('show');
-                };
             } else {
-                // Fallback: open Google Translate for pronunciation
-                const googleTranslateURL = `https://translate.google.com/?sl=en&tl=en&text=${encodeURIComponent(word)}&op=translate`;
+                // Standard TTS for other browsers
+                indicator.textContent = `🔊 Playing: "${word}" (${browserInfo})`;
                 
-                indicator.textContent = `🔊 Opening Google Translate for: "${word}"`;
-                
-                if (confirm('Your browser doesn\'t support speech synthesis. Would you like to open Google Translate for pronunciation?')) {
-                    window.open(googleTranslateURL, '_blank');
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance();
+                    utterance.text = word;
+                    
+                    utterance.rate = 0.8;
+                    utterance.pitch = 1;
+                    utterance.volume = 1;
+                    
+                    const voices = speechSynthesis.getVoices();
+                    const englishVoice = voices.find(voice => 
+                        voice.lang.startsWith('en') && 
+                        (voice.name.includes('Google') || voice.name.includes('Microsoft') || voice.name.includes('Natural'))
+                    ) || voices.find(voice => voice.lang.startsWith('en'));
+                    
+                    if (englishVoice) {
+                        utterance.voice = englishVoice;
+                    }
+                    
+                    speechSynthesis.speak(utterance);
+                    
+                    utterance.onend = function() {
+                        indicator.classList.remove('show');
+                    };
+                } else {
+                    openGoogleTranslate(word);
                 }
-                
-                setTimeout(() => {
-                    indicator.classList.remove('show');
-                }, 3000);
             }
             
             // Mark as studied
@@ -480,62 +527,56 @@
             const indicator = document.getElementById('audioIndicator');
             indicator.classList.add('show');
             
-            // Clean the sentence text
             const cleanSentence = sentence.replace(/[""]/g, '').replace(/\s+/g, ' ').trim();
+            const browserInfo = getBrowserInfo();
             
-            // Try to use Web Speech API if available
-            if ('speechSynthesis' in window) {
-                // Stop any current speech
-                speechSynthesis.cancel();
-                
-                const utterance = new SpeechSynthesisUtterance();
-                utterance.text = cleanSentence;
-                indicator.textContent = `🔊 Playing sentence: "${cleanSentence.substring(0, 50)}..."`;
-                
-                // Set voice parameters for better pronunciation
-                utterance.rate = 0.7; // Slower for sentences
-                utterance.pitch = 1;
-                utterance.volume = 1;
-                
-                // Try to use a high-quality English voice
-                const voices = speechSynthesis.getVoices();
-                const englishVoice = voices.find(voice => 
-                    voice.lang.startsWith('en') && 
-                    (voice.name.includes('Google') || voice.name.includes('Microsoft') || voice.name.includes('Natural'))
-                ) || voices.find(voice => voice.lang.startsWith('en'));
-                
-                if (englishVoice) {
-                    utterance.voice = englishVoice;
-                }
-                
-                speechSynthesis.speak(utterance);
-                
-                utterance.onend = function() {
-                    setTimeout(() => {
-                        indicator.classList.remove('show');
-                    }, 500);
-                };
-                
-                utterance.onerror = function(event) {
-                    console.error('Speech synthesis error:', event.error);
-                    indicator.textContent = '🔊 Speech error occurred';
-                    setTimeout(() => {
-                        indicator.classList.remove('show');
-                    }, 2000);
-                };
-            } else {
-                // Fallback: open Google Translate for pronunciation
-                const googleTranslateURL = `https://translate.google.com/?sl=en&tl=en&text=${encodeURIComponent(cleanSentence)}&op=translate`;
-                
-                indicator.textContent = `🔊 Opening Google Translate for sentence...`;
-                
-                if (confirm('Your browser doesn\'t support speech synthesis. Would you like to open Google Translate for pronunciation?')) {
-                    window.open(googleTranslateURL, '_blank');
-                }
+            // For Safari users, show warning and offer Google Translate
+            if (isSafari() || isIOS()) {
+                indicator.textContent = `⚠️ Safari TTS quality may be poor. Click OK to use Google Translate instead.`;
                 
                 setTimeout(() => {
+                    if (confirm('Safari\'s speech synthesis may sound unnatural. Would you like to use Google Translate for better pronunciation?')) {
+                        openGoogleTranslate(cleanSentence);
+                    } else {
+                        // Still try Safari TTS if user insists
+                        trySafariTTS(cleanSentence);
+                    }
                     indicator.classList.remove('show');
-                }, 3000);
+                }, 1000);
+            } else {
+                // Standard TTS for other browsers
+                indicator.textContent = `🔊 Playing sentence (${browserInfo}): "${cleanSentence.substring(0, 40)}..."`;
+                
+                if ('speechSynthesis' in window) {
+                    speechSynthesis.cancel();
+                    
+                    const utterance = new SpeechSynthesisUtterance();
+                    utterance.text = cleanSentence;
+                    
+                    utterance.rate = 0.7;
+                    utterance.pitch = 1;
+                    utterance.volume = 1;
+                    
+                    const voices = speechSynthesis.getVoices();
+                    const englishVoice = voices.find(voice => 
+                        voice.lang.startsWith('en') && 
+                        (voice.name.includes('Google') || voice.name.includes('Microsoft') || voice.name.includes('Natural'))
+                    ) || voices.find(voice => voice.lang.startsWith('en'));
+                    
+                    if (englishVoice) {
+                        utterance.voice = englishVoice;
+                    }
+                    
+                    speechSynthesis.speak(utterance);
+                    
+                    utterance.onend = function() {
+                        setTimeout(() => {
+                            indicator.classList.remove('show');
+                        }, 500);
+                    };
+                } else {
+                    openGoogleTranslate(cleanSentence);
+                }
             }
             
             // Mark as studied
@@ -543,6 +584,34 @@
             if (cardIndex !== undefined) {
                 markAsStudied(parseInt(cardIndex));
             }
+        }
+
+        function trySafariTTS(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance();
+                utterance.text = text;
+                
+                // Safari-optimized settings
+                utterance.rate = 0.5; // Very slow for Safari
+                utterance.pitch = 1.1;
+                utterance.volume = 1;
+                
+                const voices = speechSynthesis.getVoices();
+                const englishVoice = voices.find(voice => 
+                    voice.lang === 'en-US' || voice.lang === 'en-GB'
+                ) || voices.find(voice => voice.lang.startsWith('en'));
+                
+                if (englishVoice) {
+                    utterance.voice = englishVoice;
+                }
+                
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        function openGoogleTranslate(text) {
+            const googleTranslateURL = `https://translate.google.com/?sl=en&tl=en&text=${encodeURIComponent(text)}&op=translate`;
+            window.open(googleTranslateURL, '_blank');
         }
 
         function markAsStudied(index) {
@@ -577,16 +646,23 @@
                 };
             }
             
-            // Show initial audio indicator
+            // Show initial audio indicator with browser-specific message
             setTimeout(() => {
                 const indicator = document.getElementById('audioIndicator');
-                indicator.textContent = speechSynthesis ? 
-                    '🔊 Audio ready! Click any word or sentence to hear pronunciation' : 
-                    '🔊 Click words to open pronunciation in Google Translate';
+                const browserInfo = getBrowserInfo();
+                
+                if (isSafari() || isIOS()) {
+                    indicator.textContent = `⚠️ ${browserInfo} detected - Consider Chrome/Edge for better TTS quality`;
+                    indicator.style.background = '#ff9500'; // Orange for warning
+                } else {
+                    indicator.textContent = `🔊 ${browserInfo} - Audio ready! Click any word or sentence`;
+                    indicator.style.background = '#667eea'; // Normal blue
+                }
+                
                 indicator.classList.add('show');
                 setTimeout(() => {
                     indicator.classList.remove('show');
-                }, 4000);
+                }, 5000);
             }, 1000);
         }
 
