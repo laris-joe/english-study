@@ -1,587 +1,597 @@
-data/<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily English Vocabulary Trainer</title>
-<style>
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-}
-
-body {
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-min-height: 100vh;
-padding: 20px;
-}
-
-.container {
-max-width: 1000px;
-margin: 0 auto;
-background: rgba(255, 255, 255, 0.95);
-border-radius: 20px;
-padding: 30px;
-box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-}
-
-.header {
-text-align: center;
-margin-bottom: 30px;
-padding-bottom: 20px;
-border-bottom: 3px solid #667eea;
-}
-
-.header h1 {
-color: #333;
-font-size: 2.5em;
-margin-bottom: 10px;
-}
-
-.header p {
-color: #666;
-font-size: 1.2em;
-}
-
-.date-info {
-background: linear-gradient(45deg, #667eea, #764ba2);
-color: white;
-padding: 15px;
-border-radius: 10px;
-text-align: center;
-margin-bottom: 30px;
-font-size: 1.1em;
-}
-
-.vocab-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-gap: 20px;
-}
-
-.vocab-card {
-background: white;
-border-radius: 15px;
-padding: 25px;
-box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-border-left: 5px solid #667eea;
-transition: transform 0.3s ease, box-shadow 0.3s ease;
-position: relative;
-overflow: hidden;
-}
-
-.vocab-card:hover {
-transform: translateY(-5px);
-box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-}
-
-.vocab-card::before {
-content: '';
-position: absolute;
-top: 0;
-left: 0;
-right: 0;
-height: 3px;
-background: linear-gradient(90deg, #667eea, #764ba2);
-}
-
-.word-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 15px;
-}
-
-.word {
-font-size: 1.4em;
-font-weight: bold;
-color: #333;
-cursor: pointer;
-transition: color 0.3s ease;
-}
-
-.word:hover {
-color: #667eea;
-}
-
-.category {
-background: #667eea;
-color: white;
-padding: 5px 10px;
-border-radius: 20px;
-font-size: 0.8em;
-font-weight: 500;
-}
-
-.phonetic {
-color: #764ba2;
-font-family: 'Courier New', monospace;
-font-size: 1.1em;
-margin-bottom: 10px;
-cursor: pointer;
-transition: color 0.3s ease;
-}
-
-.phonetic:hover {
-color: #667eea;
-}
-
-.definition {
-background: #f8f9ff;
-padding: 12px;
-border-radius: 8px;
-margin-bottom: 15px;
-border-left: 3px solid #667eea;
-font-size: 0.95em;
-color: #555;
-}
-
-.sentence {
-background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-padding: 15px;
-border-radius: 10px;
-font-style: italic;
-line-height: 1.6;
-cursor: pointer;
-transition: all 0.3s ease;
-position: relative;
-}
-
-.sentence:hover {
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-color: white;
-}
-
-.sentence::before {
-content: '"';
-font-size: 2em;
-color: #667eea;
-position: absolute;
-top: -5px;
-left: 10px;
-}
-
-.sentence::after {
-content: '"';
-font-size: 2em;
-color: #667eea;
-position: absolute;
-bottom: -15px;
-right: 10px;
-}
-
-.sentence:hover::before,
-.sentence:hover::after {
-color: rgba(255, 255, 255, 0.5);
-}
-
-.progress-bar {
-width: 100%;
-height: 10px;
-background: #e0e0e0;
-border-radius: 5px;
-margin: 30px 0;
-overflow: hidden;
-}
-
-.progress-fill {
-height: 100%;
-background: linear-gradient(90deg, #667eea, #764ba2);
-width: 0%;
-transition: width 0.5s ease;
-border-radius: 5px;
-}
-
-.stats {
-display: flex;
-justify-content: space-around;
-background: #f8f9ff;
-padding: 20px;
-border-radius: 15px;
-margin-top: 20px;
-}
-
-.stat-item {
-text-align: center;
-}
-
-.stat-number {
-font-size: 2em;
-font-weight: bold;
-color: #667eea;
-}
-
-.stat-label {
-color: #666;
-margin-top: 5px;
-}
-
-.audio-indicator {
-position: fixed;
-top: 20px;
-right: 20px;
-background: #667eea;
-color: white;
-padding: 10px 20px;
-border-radius: 25px;
-font-size: 0.9em;
-opacity: 0;
-transition: opacity 0.3s ease;
-z-index: 1000;
-}
-
-.audio-indicator.show {
-opacity: 1;
-}
-
-@media (max-width: 768px) {
-.container {
-padding: 20px;
-margin: 10px;
-}
-
-.header h1 {
-font-size: 2em;
-}
-
-.vocab-grid {
-grid-template-columns: 1fr;
-}
-
-.stats {
-flex-direction: column;
-gap: 15px;
-}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily English Vocabulary Trainer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+        
+        .date-info {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .vocab-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .vocab-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .vocab-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .word-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .word {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .word:hover {
+            color: #667eea;
+        }
+        
+        .category {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        
+        .phonetic {
+            color: #764ba2;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .phonetic:hover {
+            color: #667eea;
+        }
+        
+        .definition {
+            background: #f8f9ff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 3px solid #667eea;
+            font-size: 0.95em;
+            color: #555;
+        }
+        
+        .sentence {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 15px;
+            border-radius: 10px;
+            font-style: italic;
+            line-height: 1.6;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .sentence:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .sentence::before {
+            content: '"';
+            font-size: 2em;
+            color: #667eea;
+            position: absolute;
+            top: -5px;
+            left: 10px;
+        }
+        
+        .sentence::after {
+            content: '"';
+            font-size: 2em;
+            color: #667eea;
+            position: absolute;
+            bottom: -15px;
+            right: 10px;
+        }
+        
+        .sentence:hover::before,
+        .sentence:hover::after {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 5px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .audio-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .audio-indicator.show {
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .vocab-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-<div class="header">
-<h1>🎯 Daily English Vocabulary Trainer</h1>
-<p>Master Tech & IoT Vocabulary</p>
-</div>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Daily English Vocabulary Trainer</h1>
+            <p>Master Tech & IoT Vocabulary</p>
+        </div>
+        
+        <div class="date-info">
+            📅 Today's Session: Computer Science & IoT Focus | 15 Advanced Vocabulary Words
+            <br>🔊 <strong>Audio Feature:</strong> Click any word or sentence to hear pronunciation using built-in TTS
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div class="vocab-grid" id="vocabGrid">
+            <!-- Vocabulary cards will be inserted here -->
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="totalWords">15</div>
+                <div class="stat-label">Total Words</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="studiedWords">0</div>
+                <div class="stat-label">Studied</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="progressPercent">0%</div>
+                <div class="stat-label">Progress</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="audio-indicator" id="audioIndicator">
+        🔊 Click any word or sentence to hear pronunciation
+    </div>
 
-<div class="date-info">
-📅 Today's Session: Computer Science & IoT Focus | 15 Advanced Vocabulary Words
-<br>🔊 <strong>Audio Feature:</strong> Click any word or sentence to hear pronunciation using built-in TTS
-</div>
+    <script>
+        const vocabularyData = [
+            {
+                word: "Architecture",
+                phonetic: "/ˈɑːrkɪtektʃər/",
+                category: "Computing",
+                definition: "The design and structure of computer systems or software",
+                sentence: "As Steve Jobs once said, 'The system architecture should be so simple that it can be understood by anyone, yet so powerful that it can handle the most complex tasks efficiently.'"
+            },
+            {
+                word: "Cybersecurity",
+                phonetic: "/ˈsaɪbərsɪˌkjʊrəti/",
+                category: "Network",
+                definition: "The practice of protecting systems, networks, and data from cyber attacks",
+                sentence: "According to cybersecurity experts, 'The only way to stay ahead of cybercriminals is to think like them, but act with integrity and purpose.'"
+            },
+            {
+                word: "Embedded",
+                phonetic: "/ɪmˈbedɪd/",
+                category: "Microcontroller",
+                definition: "Computer hardware and software designed for specific functions within larger systems",
+                sentence: "Bill Gates predicted that 'embedded systems will become so pervasive that they will be invisible, seamlessly integrated into every aspect of our daily lives.'"
+            },
+            {
+                word: "Algorithms",
+                phonetic: "/ˈælɡərɪðəmz/",
+                category: "Computing",
+                definition: "Step-by-step procedures for solving problems or performing computations",
+                sentence: "Donald Knuth emphasized that 'algorithms are the poetry of computation, transforming abstract problems into elegant, executable solutions.'"
+            },
+            {
+                word: "Bandwidth",
+                phonetic: "/ˈbændwɪdθ/",
+                category: "Network",
+                definition: "The maximum rate of data transfer across a network connection",
+                sentence: "Network engineers understand that 'bandwidth is like a highway - the wider it is, the more traffic it can handle without congestion.'"
+            },
+            {
+                word: "Firmware",
+                phonetic: "/ˈfɜːrmwer/",
+                category: "Microcontroller",
+                definition: "Low-level software stored in non-volatile memory that controls hardware components",
+                sentence: "As embedded systems experts note, 'firmware is the bridge between hardware and software, the invisible conductor orchestrating the digital symphony.'"
+            },
+            {
+                word: "Cryptography",
+                phonetic: "/krɪpˈtɒɡrəfi/",
+                category: "Network",
+                definition: "The science of securing information through encoding and decoding techniques",
+                sentence: "Alan Turing's work in cryptography proved that 'mathematics is not only the language of science, but also the guardian of human secrets.'"
+            },
+            {
+                word: "Scalability",
+                phonetic: "/ˌskeɪləˈbɪləti/",
+                category: "Computing",
+                definition: "The ability of a system to handle increased workload by adding resources",
+                sentence: "Tech leaders believe that 'true scalability is not just about handling more users, but about maintaining performance and user experience at any scale.'"
+            },
+            {
+                word: "Microcontroller",
+                phonetic: "/ˈmaɪkroʊkənˌtroʊlər/",
+                category: "Microcontroller",
+                definition: "A small computer on a single integrated circuit containing a processor, memory, and programmable input/output peripherals",
+                sentence: "Arduino's creators envisioned that 'microcontrollers would democratize electronics, making complex automation accessible to creators worldwide.'"
+            },
+            {
+                word: "Interoperability",
+                phonetic: "/ˌɪntərˌɒpərəˈbɪləti/",
+                category: "IoT",
+                definition: "The ability of different systems, devices, or applications to work together and exchange information",
+                sentence: "IoT pioneers believe that 'interoperability is the cornerstone of the connected world, enabling diverse devices to communicate as one unified ecosystem.'"
+            },
+            {
+                word: "Latency",
+                phonetic: "/ˈleɪtənsi/",
+                category: "Network",
+                definition: "The delay between sending a request and receiving a response in a network",
+                sentence: "Network architects understand that 'latency is the enemy of real-time applications, where every millisecond can determine success or failure.'"
+            },
+            {
+                word: "Virtualization",
+                phonetic: "/ˌvɜːrtʃuəlaɪˈzeɪʃən/",
+                category: "Computing",
+                definition: "The creation of virtual versions of physical computing resources",
+                sentence: "Cloud computing experts assert that 'virtualization has revolutionized IT infrastructure, allowing us to build more with less physical hardware.'"
+            },
+            {
+                word: "Protocol",
+                phonetic: "/ˈproʊtəkɔːl/",
+                category: "Network",
+                definition: "A set of rules governing data transmission between devices",
+                sentence: "Internet pioneers like Vint Cerf believed that 'protocols are the diplomatic language of the digital world, enabling global communication across diverse systems.'"
+            },
+            {
+                word: "Synchronization",
+                phonetic: "/ˌsɪŋkrənaɪˈzeɪʃən/",
+                category: "Microcontroller",
+                definition: "The coordination of simultaneous processes or data to ensure consistent operation",
+                sentence: "Real-time systems engineers know that 'synchronization is the heartbeat of embedded systems, ensuring all components work in perfect harmony.'"
+            },
+            {
+                word: "Optimization",
+                phonetic: "/ˌɒptɪmaɪˈzeɪʃən/",
+                category: "Computing",
+                definition: "The process of making a system or design as effective or functional as possible",
+                sentence: "Performance experts believe that 'optimization is an art form where science meets creativity, turning good code into exceptional experiences.'"
+            }
+        ];
 
-<div class="progress-bar">
-<div class="progress-fill" id="progressFill"></div>
-</div>
+        let studiedCount = 0;
+        const totalWords = vocabularyData.length;
 
-<div class="vocab-grid" id="vocabGrid">
-<!-- Vocabulary cards will be inserted here -->
-</div>
+        function createVocabCard(vocab, index) {
+            return `
+                <div class="vocab-card" data-index="${index}">
+                    <div class="word-header">
+                        <span class="word" onclick="playPronunciation('${vocab.word}')">${vocab.word}</span>
+                        <span class="category">${vocab.category}</span>
+                    </div>
+                    <div class="phonetic" onclick="playPronunciation('${vocab.word}')">${vocab.phonetic}</div>
+                    <div class="definition">${vocab.definition}</div>
+                    <div class="sentence" onclick="playSentence(\`${vocab.sentence.replace(/`/g, '\\`').replace(/'/g, "\\'")}\`)">${vocab.sentence}</div>
+                </div>
+            `;
+        }
 
-<div class="stats">
-<div class="stat-item">
-<div class="stat-number" id="totalWords">15</div>
-<div class="stat-label">Total Words</div>
-</div>
-<div class="stat-item">
-<div class="stat-number" id="studiedWords">0</div>
-<div class="stat-label">Studied</div>
-</div>
-<div class="stat-item">
-<div class="stat-number" id="progressPercent">0%</div>
-<div class="stat-label">Progress</div>
-</div>
-</div>
-</div>
+        function playPronunciation(word) {
+            const indicator = document.getElementById('audioIndicator');
+            indicator.classList.add('show');
+            
+            // Try to use Web Speech API if available
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance();
+                utterance.text = word;
+                indicator.textContent = `🔊 Playing: "${word}"`;
+                
+                // Set voice parameters for better pronunciation
+                utterance.rate = 0.8; // Slightly slower for learning
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                
+                // Try to use a high-quality English voice
+                const voices = speechSynthesis.getVoices();
+                const englishVoice = voices.find(voice => 
+                    voice.lang.startsWith('en') && 
+                    (voice.name.includes('Google') || voice.name.includes('Microsoft') || voice.name.includes('Natural'))
+                ) || voices.find(voice => voice.lang.startsWith('en'));
+                
+                if (englishVoice) {
+                    utterance.voice = englishVoice;
+                }
+                
+                speechSynthesis.speak(utterance);
+                
+                utterance.onend = function() {
+                    indicator.classList.remove('show');
+                };
+            } else {
+                // Fallback: open Google Translate for pronunciation
+                const googleTranslateURL = `https://translate.google.com/?sl=en&tl=en&text=${encodeURIComponent(word)}&op=translate`;
+                
+                indicator.textContent = `🔊 Opening Google Translate for: "${word}"`;
+                
+                if (confirm('Your browser doesn\'t support speech synthesis. Would you like to open Google Translate for pronunciation?')) {
+                    window.open(googleTranslateURL, '_blank');
+                }
+                
+                setTimeout(() => {
+                    indicator.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Mark as studied
+            const cardIndex = event.target.closest('.vocab-card')?.dataset.index;
+            if (cardIndex !== undefined) {
+                markAsStudied(parseInt(cardIndex));
+            }
+        }
 
-<div class="audio-indicator" id="audioIndicator">
-🔊 Click any word or sentence to hear pronunciation
-</div>
+        function playSentence(sentence) {
+            const indicator = document.getElementById('audioIndicator');
+            indicator.classList.add('show');
+            
+            // Clean the sentence text
+            const cleanSentence = sentence.replace(/[""]/g, '').replace(/\s+/g, ' ').trim();
+            
+            // Try to use Web Speech API if available
+            if ('speechSynthesis' in window) {
+                // Stop any current speech
+                speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance();
+                utterance.text = cleanSentence;
+                indicator.textContent = `🔊 Playing sentence: "${cleanSentence.substring(0, 50)}..."`;
+                
+                // Set voice parameters for better pronunciation
+                utterance.rate = 0.7; // Slower for sentences
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                
+                // Try to use a high-quality English voice
+                const voices = speechSynthesis.getVoices();
+                const englishVoice = voices.find(voice => 
+                    voice.lang.startsWith('en') && 
+                    (voice.name.includes('Google') || voice.name.includes('Microsoft') || voice.name.includes('Natural'))
+                ) || voices.find(voice => voice.lang.startsWith('en'));
+                
+                if (englishVoice) {
+                    utterance.voice = englishVoice;
+                }
+                
+                speechSynthesis.speak(utterance);
+                
+                utterance.onend = function() {
+                    setTimeout(() => {
+                        indicator.classList.remove('show');
+                    }, 500);
+                };
+                
+                utterance.onerror = function(event) {
+                    console.error('Speech synthesis error:', event.error);
+                    indicator.textContent = '🔊 Speech error occurred';
+                    setTimeout(() => {
+                        indicator.classList.remove('show');
+                    }, 2000);
+                };
+            } else {
+                // Fallback: open Google Translate for pronunciation
+                const googleTranslateURL = `https://translate.google.com/?sl=en&tl=en&text=${encodeURIComponent(cleanSentence)}&op=translate`;
+                
+                indicator.textContent = `🔊 Opening Google Translate for sentence...`;
+                
+                if (confirm('Your browser doesn\'t support speech synthesis. Would you like to open Google Translate for pronunciation?')) {
+                    window.open(googleTranslateURL, '_blank');
+                }
+                
+                setTimeout(() => {
+                    indicator.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Mark as studied
+            const cardIndex = event.target.closest('.vocab-card')?.dataset.index;
+            if (cardIndex !== undefined) {
+                markAsStudied(parseInt(cardIndex));
+            }
+        }
 
-<script>
-const vocabularyData = [
-{
-word: "Architecture",
-phonetic: "/ˈɑːrkɪtektʃər/",
-category: "Computing",
-definition: "The design and structure of computer systems or software",
-sentence: "As Steve Jobs once said, 'The system architecture should be so simple that it can be understood by anyone, yet so powerful that it can handle the most complex tasks efficiently.'"
-},
-{
-word: "Cybersecurity",
-phonetic: "/ˈsaɪbərsɪˌkjʊrəti/",
-category: "Network",
-definition: "The practice of protecting systems, networks, and data from cyber attacks",
-sentence: "According to cybersecurity experts, 'The only way to stay ahead of cybercriminals is to think like them, but act with integrity and purpose.'"
-},
-{
-word: "Embedded",
-phonetic: "/ɪmˈbedɪd/",
-category: "Microcontroller",
-definition: "Computer hardware and software designed for specific functions within larger systems",
-sentence: "Bill Gates predicted that 'embedded systems will become so pervasive that they will be invisible, seamlessly integrated into every aspect of our daily lives.'"
-},
-{
-word: "Algorithms",
-phonetic: "/ˈælɡərɪðəmz/",
-category: "Computing",
-definition: "Step-by-step procedures for solving problems or performing computations",
-sentence: "Donald Knuth emphasized that 'algorithms are the poetry of computation, transforming abstract problems into elegant, executable solutions.'"
-},
-{
-word: "Bandwidth",
-phonetic: "/ˈbændwɪdθ/",
-category: "Network",
-definition: "The maximum rate of data transfer across a network connection",
-sentence: "Network engineers understand that 'bandwidth is like a highway - the wider it is, the more traffic it can handle without congestion.'"
-},
-{
-word: "Firmware",
-phonetic: "/ˈfɜːrmwer/",
-category: "Microcontroller",
-definition: "Low-level software stored in non-volatile memory that controls hardware components",
-sentence: "As embedded systems experts note, 'firmware is the bridge between hardware and software, the invisible conductor orchestrating the digital symphony.'"
-},
-{
-word: "Cryptography",
-phonetic: "/krɪpˈtɒɡrəfi/",
-category: "Network",
-definition: "The science of securing information through encoding and decoding techniques",
-sentence: "Alan Turing's work in cryptography proved that 'mathematics is not only the language of science, but also the guardian of human secrets.'"
-},
-{
-word: "Scalability",
-phonetic: "/ˌskeɪləˈbɪləti/",
-category: "Computing",
-definition: "The ability of a system to handle increased workload by adding resources",
-sentence: "Tech leaders believe that 'true scalability is not just about handling more users, but about maintaining performance and user experience at any scale.'"
-},
-{
-word: "Microcontroller",
-phonetic: "/ˈmaɪkroʊkənˌtroʊlər/",
-category: "Microcontroller",
-definition: "A small computer on a single integrated circuit containing a processor, memory, and programmable input/output peripherals",
-sentence: "Arduino's creators envisioned that 'microcontrollers would democratize electronics, making complex automation accessible to creators worldwide.'"
-},
-{
-word: "Interoperability",
-phonetic: "/ˌɪntərˌɒpərəˈbɪləti/",
-category: "IoT",
-definition: "The ability of different systems, devices, or applications to work together and exchange information",
-sentence: "IoT pioneers believe that 'interoperability is the cornerstone of the connected world, enabling diverse devices to communicate as one unified ecosystem.'"
-},
-{
-word: "Latency",
-phonetic: "/ˈleɪtənsi/",
-category: "Network",
-definition: "The delay between sending a request and receiving a response in a network",
-sentence: "Network architects understand that 'latency is the enemy of real-time applications, where every millisecond can determine success or failure.'"
-},
-{
-word: "Virtualization",
-phonetic: "/ˌvɜːrtʃuəlaɪˈzeɪʃən/",
-category: "Computing",
-definition: "The creation of virtual versions of physical computing resources",
-sentence: "Cloud computing experts assert that 'virtualization has revolutionized IT infrastructure, allowing us to build more with less physical hardware.'"
-},
-{
-word: "Protocol",
-phonetic: "/ˈproʊtəkɔːl/",
-category: "Network",
-definition: "A set of rules governing data transmission between devices",
-sentence: "Internet pioneers like Vint Cerf believed that 'protocols are the diplomatic language of the digital world, enabling global communication across diverse systems.'"
-},
-{
-word: "Synchronization",
-phonetic: "/ˌsɪŋkrənaɪˈzeɪʃən/",
-category: "Microcontroller",
-definition: "The coordination of simultaneous processes or data to ensure consistent operation",
-sentence: "Real-time systems engineers know that 'synchronization is the heartbeat of embedded systems, ensuring all components work in perfect harmony.'"
-},
-{
-word: "Optimization",
-phonetic: "/ˌɒptɪmaɪˈzeɪʃən/",
-category: "Computing",
-definition: "The process of making a system or design as effective or functional as possible",
-sentence: "Performance experts believe that 'optimization is an art form where science meets creativity, turning good code into exceptional experiences.'"
-}
-];
+        function markAsStudied(index) {
+            const card = document.querySelector(`[data-index="${index}"]`);
+            if (card && !card.classList.contains('studied')) {
+                card.classList.add('studied');
+                card.style.borderLeft = '5px solid #4CAF50';
+                studiedCount++;
+                updateProgress();
+            }
+        }
 
-let studiedCount = 0;
-const totalWords = vocabularyData.length;
+        function updateProgress() {
+            const progress = (studiedCount / totalWords) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('studiedWords').textContent = studiedCount;
+            document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
+        }
 
-function createVocabCard(vocab, index) {
-return                  <div class="vocab-card" data-index="${index}">                     <div class="word-header">                         <span class="word" onclick="playPronunciation('${vocab.word}')">${vocab.word}</span>                         <span class="category">${vocab.category}</span>                     </div>                     <div class="phonetic" onclick="playPronunciation('${vocab.word}')">${vocab.phonetic}</div>                     <div class="definition">${vocab.definition}</div>                     <div class="sentence" onclick="playSentence(\\${vocab.sentence.replace(//g, '\\\\').replace(/'/g, "\\'")}\)">${vocab.sentence}</div>                 </div>             ;
-}
+        function initializeApp() {
+            const vocabGrid = document.getElementById('vocabGrid');
+            
+            vocabularyData.forEach((vocab, index) => {
+                vocabGrid.innerHTML += createVocabCard(vocab, index);
+            });
+            
+            // Load voices for speech synthesis
+            if ('speechSynthesis' in window) {
+                speechSynthesis.onvoiceschanged = function() {
+                    const voices = speechSynthesis.getVoices();
+                    console.log('Available voices:', voices.filter(v => v.lang.startsWith('en')));
+                };
+            }
+            
+            // Show initial audio indicator
+            setTimeout(() => {
+                const indicator = document.getElementById('audioIndicator');
+                indicator.textContent = speechSynthesis ? 
+                    '🔊 Audio ready! Click any word or sentence to hear pronunciation' : 
+                    '🔊 Click words to open pronunciation in Google Translate';
+                indicator.classList.add('show');
+                setTimeout(() => {
+                    indicator.classList.remove('show');
+                }, 4000);
+            }, 1000);
+        }
 
-function playPronunciation(word) {
-const indicator = document.getElementById('audioIndicator');
-indicator.classList.add('show');
-
-// Try to use Web Speech API if available
-if ('speechSynthesis' in window) {
-const utterance = new SpeechSynthesisUtterance();
-utterance.text = word;
-indicator.textContent = 🔊 Playing: "${word}";
-
-// Set voice parameters for better pronunciation
-utterance.rate = 0.8; // Slightly slower for learning
-utterance.pitch = 1;
-utterance.volume = 1;
-
-// Try to use a high-quality English voice
-const voices = speechSynthesis.getVoices();
-const englishVoice = voices.find(voice =>
-voice.lang.startsWith('en') &&
-(voice.name.includes('Google') || voice.name.includes('Microsoft') || voice.name.includes('Natural'))
-) || voices.find(voice => voice.lang.startsWith('en'));
-
-if (englishVoice) {
-utterance.voice = englishVoice;
-}
-
-speechSynthesis.speak(utterance);
-
-utterance.onend = function() {
-indicator.classList.remove('show');
-};
-} else {
-// Fallback: open Google Translate for pronunciation
-const googleTranslateURL = https://translate.google.com/?sl=en&tl=en&text=${encodeURIComponent(word)}&op=translate;
-
-indicator.textContent = 🔊 Opening Google Translate for: "${word}";
-
-if (confirm('Your browser doesn\'t support speech synthesis. Would you like to open Google Translate for pronunciation?')) {
-window.open(googleTranslateURL, '_blank');
-}
-
-setTimeout(() => {
-indicator.classList.remove('show');
-}, 3000);
-}
-
-// Mark as studied
-const cardIndex = event.target.closest('.vocab-card')?.dataset.index;
-if (cardIndex !== undefined) {
-markAsStudied(parseInt(cardIndex));
-}
-}
-
-function playSentence(sentence) {
-const indicator = document.getElementById('audioIndicator');
-indicator.classList.add('show');
-
-// Clean the sentence text
-const cleanSentence = sentence.replace(/[""]/g, '').replace(/\s+/g, ' ').trim();
-
-// Try to use Web Speech API if available
-if ('speechSynthesis' in window) {
-// Stop any current speech
-speechSynthesis.cancel();
-
-const utterance = new SpeechSynthesisUtterance();
-utterance.text = cleanSentence;
-indicator.textContent = 🔊 Playing sentence: "${cleanSentence.substring(0, 50)}...";
-
-// Set voice parameters for better pronunciation
-utterance.rate = 0.7; // Slower for sentences
-utterance.pitch = 1;
-utterance.volume = 1;
-
-// Try to use a high-quality English voice
-const voices = speechSynthesis.getVoices();
-const englishVoice = voices.find(voice =>
-voice.lang.startsWith('en') &&
-(voice.name.includes('Google') || voice.name.includes('Microsoft') || voice.name.includes('Natural'))
-) || voices.find(voice => voice.lang.startsWith('en'));
-
-if (englishVoice) {
-utterance.voice = englishVoice;
-}
-
-speechSynthesis.speak(utterance);
-
-utterance.onend = function() {
-setTimeout(() => {
-indicator.classList.remove('show');
-}, 500);
-};
-
-utterance.onerror = function(event) {
-console.error('Speech synthesis error:', event.error);
-indicator.textContent = '🔊 Speech error occurred';
-setTimeout(() => {
-indicator.classList.remove('show');
-}, 2000);
-};
-} else {
-// Fallback: open Google Translate for pronunciation
-const googleTranslateURL = https://translate.google.com/?sl=en&tl=en&text=${encodeURIComponent(cleanSentence)}&op=translate;
-
-indicator.textContent = 🔊 Opening Google Translate for sentence...;
-
-if (confirm('Your browser doesn\'t support speech synthesis. Would you like to open Google Translate for pronunciation?')) {
-window.open(googleTranslateURL, '_blank');
-}
-
-setTimeout(() => {
-indicator.classList.remove('show');
-}, 3000);
-}
-
-// Mark as studied
-const cardIndex = event.target.closest('.vocab-card')?.dataset.index;
-if (cardIndex !== undefined) {
-markAsStudied(parseInt(cardIndex));
-}
-}
-
-function markAsStudied(index) {
-const card = document.querySelector([data-index="${index}"]);
-if (card && !card.classList.contains('studied')) {
-card.classList.add('studied');
-card.style.borderLeft = '5px solid #4CAF50';
-studiedCount++;
-updateProgress();
-}
-}
-
-function updateProgress() {
-const progress = (studiedCount / totalWords) * 100;
-document.getElementById('progressFill').style.width = ${progress}%;
-document.getElementById('studiedWords').textContent = studiedCount;
-document.getElementById('progressPercent').textContent = ${Math.round(progress)}%;
-}
-
-function initializeApp() {
-const vocabGrid = document.getElementById('vocabGrid');
-
-vocabularyData.forEach((vocab, index) => {
-vocabGrid.innerHTML += createVocabCard(vocab, index);
-});
-
-// Load voices for speech synthesis
-if ('speechSynthesis' in window) {
-speechSynthesis.onvoiceschanged = function() {
-const voices = speechSynthesis.getVoices();
-console.log('Available voices:', voices.filter(v => v.lang.startsWith('en')));
-};
-}
-
-// Show initial audio indicator
-setTimeout(() => {
-const indicator = document.getElementById('audioIndicator');
-indicator.textContent = speechSynthesis ?
-'🔊 Audio ready! Click any word or sentence to hear pronunciation' :
-'🔊 Click words to open pronunciation in Google Translate';
-indicator.classList.add('show');
-setTimeout(() => {
-indicator.classList.remove('show');
-}, 4000);
-}, 1000);
-}
-
-// Initialize the app when the page loads
-document.addEventListener('DOMContentLoaded', initializeApp);
-</script>
+        // Initialize the app when the page loads
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
 </body>
 </html>
