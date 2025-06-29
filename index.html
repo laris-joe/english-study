@@ -1,1 +1,7 @@
-<html>1</html>html>
+	"<html><head><meta charset='utf-8'><title>每日词汇目录</title></head><body><h1>Vocabulary List</h1><ul>" +
+items.map(item => {
+  const file = item.json.name;
+  const label = file.replace(".html", "");
+  return `<li><a href="data/${file}">${label}</a></li>`;
+}).join("") +
+"</ul></body></html>"
